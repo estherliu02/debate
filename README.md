@@ -20,7 +20,7 @@ cd debate_gen
 python -m venv .venv
 source .venv/bin/activate
 pip install pydantic pyyaml requests
-export OPENROUTER_API_KEY="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"
+export OPENROUTER_API_KEY=YOUR_KEY_HERE
 python run_generate.py
 ```
 
