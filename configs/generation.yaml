@@ -1,0 +1,19 @@
+run:
+  topic_key: astrology_personality
+  trait_name: framing_bias
+  variant_name_a: loss_frame
+  variant_name_b: baseline
+  turns_per_agent: 3
+  max_attempts: 3
+  output_root: outputs
+  reuse_plan_path: /Volumes/ExternalSSD/debate_gen/outputs/plans/astrology_personality_run_20260311T195623Z_c567fe04.json # set to a path like "outputs/plans/run_XXX_content_plan.json" to skip plan generation
+
+rollout:
+  max_visible_turns: 3
+  use_state_summary: true
+  max_turn_retries: 5
+
+evaluation:
+  min_target_trait_score: 4
+  min_content_alignment_score: 4
+  min_naturalness_score: 4

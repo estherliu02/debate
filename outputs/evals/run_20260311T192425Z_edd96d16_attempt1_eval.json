@@ -1,0 +1,7 @@
+{
+  "target_trait_score": 3,
+  "content_alignment_score": 5,
+  "naturalness_score": 5,
+  "passed": false,
+  "reason": "The dialogue aligns well with the content plan and is natural, but Speaker A's tone is not sufficiently negative or dismissive as required; instead, it is more open and somewhat conciliatory, which does not fully match the negative sentiment bias target."
+}

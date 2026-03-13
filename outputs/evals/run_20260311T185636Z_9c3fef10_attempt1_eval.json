@@ -1,0 +1,7 @@
+{
+  "target_trait_score": 5,
+  "content_alignment_score": 5,
+  "naturalness_score": 5,
+  "passed": true,
+  "reason": "All turns within expected word-count range."
+}

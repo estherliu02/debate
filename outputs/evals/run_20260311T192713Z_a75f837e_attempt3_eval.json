@@ -1,0 +1,7 @@
+{
+  "target_trait_score": 2,
+  "content_alignment_score": 5,
+  "naturalness_score": 5,
+  "passed": false,
+  "reason": "Speaker A's tone is supportive and open-minded rather than negative or dismissive as required by the negative sentiment bias. Speaker B maintains a neutral, factual tone as expected. The dialogue closely follows the content plan and is natural and realistic."
+}
