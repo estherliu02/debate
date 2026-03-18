@@ -1,7 +1,7 @@
 run:
   topic_key: astrology_personality
-  trait_name: framing_bias
-  variant_name_a: loss_frame
+  trait_name: anchoring_bias
+  variant_name_a: active
   variant_name_b: baseline
   turns_per_agent: 3
   max_attempts: 3

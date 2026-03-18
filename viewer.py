@@ -1,24 +1,40 @@
 """Dialogue viewer — generates a self-contained HTML page and opens it in the browser.
 
 Usage:
-    python viewer.py
+    python viewer.py                  # show all dates
+    python viewer.py 0312             # show March 12 only
+    python viewer.py 0312 0315        # show March 12 and March 15
 """
 
 import json
+import sys
 import webbrowser
 from pathlib import Path
 
-ACCEPTED_DIR = Path(__file__).parent / "outputs" / "accepted"
-OUT_HTML = Path(__file__).parent / "outputs" / "viewer.html"
+OUTPUTS_DIR = Path(__file__).parent / "outputs"
+OUT_HTML = OUTPUTS_DIR / "viewer.html"
 
 
-def load_dialogues() -> list[dict]:
-    files = sorted(ACCEPTED_DIR.glob("*_accepted_dialogue.json"))
+def load_dialogues(dates: list[str] | None = None) -> list[dict]:
+    if dates:
+        folders = [OUTPUTS_DIR / d for d in dates]
+        missing = [str(f) for f in folders if not f.is_dir()]
+        if missing:
+            print(f"Date folder(s) not found: {', '.join(missing)}")
+            raise SystemExit(1)
+    else:
+        folders = sorted(f for f in OUTPUTS_DIR.iterdir() if f.is_dir())
+
     dialogues = []
-    for f in files:
-        data = json.loads(f.read_text(encoding="utf-8"))
-        data["_filename"] = f.name
-        dialogues.append(data)
+    for folder in folders:
+        accepted_dir = folder / "accepted"
+        if not accepted_dir.is_dir():
+            continue
+        for f in sorted(accepted_dir.glob("*_accepted_dialogue.json")):
+            data = json.loads(f.read_text(encoding="utf-8"))
+            data["_filename"] = f.name
+            data["_date"] = folder.name
+            dialogues.append(data)
     return dialogues
 
 
@@ -107,6 +123,7 @@ function render() {{
   document.getElementById('meta').innerHTML = `
     <h2>${{d.topic}}</h2>
     <div class="tags">
+      <span class="tag"><b>Date:</b> ${{d._date}}</span>
       <span class="tag"><b>Trait:</b> ${{d.trait_name}}</span>
       <span class="tag"><b>Variant A:</b> ${{d.variant_name_a}}</span>
       <span class="tag"><b>Variant B:</b> ${{d.variant_name_b ?? '—'}}</span>
@@ -135,11 +152,14 @@ render();
 
 
 if __name__ == "__main__":
-    dialogues = load_dialogues()
+    dates = sys.argv[1:] or None
+    dialogues = load_dialogues(dates)
     if not dialogues:
-        print("No accepted dialogues found in outputs/accepted/")
+        label = f"outputs/{', '.join(dates)}/accepted/" if dates else "any date folder"
+        print(f"No accepted dialogues found in {label}")
         raise SystemExit(1)
 
     OUT_HTML.write_text(build_html(dialogues), encoding="utf-8")
-    print(f"Loaded {len(dialogues)} dialogue(s). Opening viewer...")
+    label = ", ".join(dates) if dates else "all dates"
+    print(f"Loaded {len(dialogues)} dialogue(s) from {label}. Opening viewer...")
     webbrowser.open(OUT_HTML.as_uri())

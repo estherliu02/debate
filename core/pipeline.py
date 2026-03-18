@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import yaml
-
 from configs.topics import TOPICS
 from configs.traits import TRAIT_LIBRARY
 from core.evaluator import DialogueEvaluator
@@ -18,8 +16,8 @@ from utils.json_utils import dump_json
 
 
 class PipelineRunner:
-    def __init__(self, config_path: str):
-        self.config = yaml.safe_load(Path(config_path).read_text())
+    def __init__(self, config: dict):
+        self.config = config
         self.client = OpenRouterClient()
         self.planner = Planner(self.client)
         self.rollout = DebateRolloutEngine(
@@ -59,7 +57,8 @@ class PipelineRunner:
             )
             topic_key = self.config["run"]["topic_key"]
             plan_source = f"{topic_key}_{run_id}.json"
-            dump_json(output_root / "plans" / plan_source, content_plan.model_dump())
+            plan_path = output_root / "plans" / plan_source
+            dump_json(plan_path, content_plan.model_dump())
             print(f"[{run_id}] Content plan saved.")
 
         accepted = None
@@ -116,5 +115,6 @@ class PipelineRunner:
             "accepted": accepted is not None,
             "last_eval": None if last_eval is None else last_eval.model_dump(),
             "output_root": str(output_root),
+            "plan_path": str(plan_path),
             "plan_reused": bool(reuse_plan_path),
         }
